@@ -2,6 +2,7 @@ const express = require('express');
 const got = require("got");
 var cors = require('cors')
 const app = express();
+const { openConnection } = require('./Utils/database.js');
 
 //Get Route Handlers
 const usersRouter = require('./Routes/users');
