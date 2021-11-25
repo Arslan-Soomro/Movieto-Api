@@ -1,0 +1,2 @@
+GET http://localhost:3838/movie?link=https://www.themoviedb.org/tv/1402-the-walking-dead
+###
