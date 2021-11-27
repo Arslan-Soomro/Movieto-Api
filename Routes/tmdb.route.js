@@ -1,9 +1,10 @@
-const cheerio = require("cheerio");
 const express = require('express');
+const got = require("got");
+const cheerio = require("cheerio");
 
 const router = express.Router();
 
-router.get('/tmdb', async (req, res) => {
+router.get('/', async (req, res) => {
     const link = req.query.link;
     console.log('Link Hit : ', link);
     console.log(link ? 'Yes' : 'No');

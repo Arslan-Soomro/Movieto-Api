@@ -1,12 +1,11 @@
 const db = require('./database');
 
-const User = require('../Models/user');
-const Movie = require('../Models/movie');
-const WatchList = require('../Models/watchlist');
+const User = require('../Models/user.model');
+const Movie = require('../Models/movie.model');
+const WatchList = require('../Models/watchlist.model');
 
-//Check If it Works
-
-const initDB = () => {
+//Creates Tables and Their Associations
+const initTables = () => {
     try{
         //Create a many to many relationship
         WatchList.belongsTo(User, { foreignKey: 'user_id'});
@@ -21,4 +20,4 @@ const initDB = () => {
     }
 }
 
-module.exports = initDB;
+module.exports = initTables;

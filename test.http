@@ -1,2 +1,4 @@
-GET http://localhost:3838/movie?link=https://www.themoviedb.org/tv/1402-the-walking-dead
+
+// Get A Specific Movie Details, provided its tmdb link
+GET http://localhost:5000/movie?link=https://www.themoviedb.org/tv/1402-the-walking-dead
 ###
