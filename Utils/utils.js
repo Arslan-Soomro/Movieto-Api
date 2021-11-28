@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const validateUserData = (uData) => {
     if(uData){
         if(uData.full_name && uData.user_name && uData.password && uData.email){
@@ -26,4 +28,11 @@ const validateUserData = (uData) => {
     return ({message: 'User Data not Provided', isValid: false});
 }
 
+const hashEncrypt = async (strToEncrypt) => {
+    const saltRounds = 10;
+    const encryptedStr = await bcrypt.hash(strToEncrypt, saltRounds);
+    return encryptedStr;
+}
+
 exports.validateUserData = validateUserData;
+exports.hashEncrypt = hashEncrypt;

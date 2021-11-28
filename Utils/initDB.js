@@ -20,4 +20,11 @@ const initTables = () => {
     }
 }
 
+const resetUsersTable = () => {
+    //Delete All Users
+    await User.destroy({ truncate: { cascade: true, restartIdentity: true }}); 
+    //Set PK to 0
+    await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
+}
+
 module.exports = initTables;
