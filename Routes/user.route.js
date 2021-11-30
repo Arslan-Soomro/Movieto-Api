@@ -4,8 +4,15 @@ const { validateUserData, hashEncrypt } = require('../Utils/utils');
 
 const userModel = require('../Models/user.model');
 const db = require('../Utils/database');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 //Let the user login
+//Authenticate User
+//Generate JWT
+//Authenticate Using JWT
+
+const JWT_SECRET = "blahblahblah";
 
 router.get('/', (req, res) => {
     res.send("Welcome To Users Route");
@@ -51,6 +58,55 @@ router.post('/', async (req, res) => {
         console.log("Error: " + err.message);
         res.status(500).json({message: 'Unable to Processs The Request'});
     }
+});
+
+router.post('/login', async (req, res) => {
+    if(req.body){
+        try{
+
+            let userData;
+
+            if(req.body.token){
+                let tokenData
+                
+                //Verify Token
+                try{
+                    tokenData = jwt.verify(req.body.token, JWT_SECRET);
+                }catch(err){
+                    console.log("Error@UserAuthentication: " + err.message);
+                    res.status(200).json({message: "Invalid Token"});
+                    return ;
+                }
+
+                //Return Back Data
+                userData = await userModel.findOne({where: { id: tokenData.id }});
+                res.status(200).json({message: "Token Autheticated, Access Granted", data: userData});
+                return ;
+                
+
+            //User should submit a username and password
+            }else if(req.body.user_name && req.body.password){
+                userData = await userModel.findOne({where: { user_name: req.body.user_name}});
+
+                if(userData){//User with such username exists
+                    //Compare passwords
+                    if(await bcrypt.compare(req.body.password, userData.password)){
+                        //Generate JWT Token, (Setup a expiry time)
+                        const accessToken = jwt.sign({id: userData.id, user_name: userData.user_name}, JWT_SECRET);
+
+                        res.json({message: "Login Succesful", data: {token: accessToken}});
+                        return ;
+                    }
+                }
+            }
+            //If username and password doesn't match
+            res.status(400).json({message: "Invalid Username or Password"});
+        }catch(err){
+            console.log("Error@login@user: " + err.message);
+            res.status(500).json({message: "Unable to process the request"})
+        }
+    }
+    //Generate A JWT token and send back
 });
 
 router.get('/destroy', async (req, res) => {

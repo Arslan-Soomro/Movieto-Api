@@ -14,17 +14,20 @@ const initTables = () => {
         User.hasMany(WatchList, { foreignKey: 'user_id'});
         Movie.hasMany(WatchList, { foreignKey: 'movie_id'});
 
-        db.sync().then(() => console.log("Succesfully Initiated"));
+        db.sync({force: true}).then(() => console.log("Succesfully Initiated"));
     }catch(err){
         console.log("Error While Initiating, ", err.message);
     }
 }
 
-const resetUsersTable = () => {
+const resetUsersTable = async () => {
     //Delete All Users
     await User.destroy({ truncate: { cascade: true, restartIdentity: true }}); 
     //Set PK to 0
     await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
 }
 
-module.exports = initTables;
+initTables();
+
+exports.initTables = initTables;
+exports.resetUsersTable = resetUsersTable;

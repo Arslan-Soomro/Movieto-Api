@@ -34,5 +34,26 @@ const hashEncrypt = async (strToEncrypt) => {
     return encryptedStr;
 }
 
+const formatDate = (dateStr) => {
+    //Pass in a date String
+
+    //Create a date object
+    let oldDate = new Date(dateStr);
+
+    let monthSeperator = '-';
+    let dateSeperator = '-';
+
+    if(oldDate.getMonth()+1 < 10){// +1 because month returns 0-11 number
+        monthSeperator = '-0';
+    }
+
+    if(oldDate.getDate() < 10){
+        dateSeperator = '-0';
+    }
+    
+    return oldDate.getFullYear() + monthSeperator + (oldDate.getMonth()+1) + dateSeperator + oldDate.getDate();
+}
+
 exports.validateUserData = validateUserData;
 exports.hashEncrypt = hashEncrypt;
+exports.formatDate = formatDate;

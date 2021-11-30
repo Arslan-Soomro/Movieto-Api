@@ -26,7 +26,7 @@ const Movie = db.define("movie", {
     },
 
     launch_date: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATEONLY,
         allowNull: false,
     },
 
