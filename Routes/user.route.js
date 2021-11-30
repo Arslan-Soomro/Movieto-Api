@@ -7,10 +7,7 @@ const db = require('../Utils/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//Let the user login
-//Authenticate User
-//Generate JWT
-//Authenticate Using JWT
+//Move onto movies now maybe.
 
 const JWT_SECRET = "blahblahblah";
 
@@ -91,8 +88,8 @@ router.post('/login', async (req, res) => {
                 if(userData){//User with such username exists
                     //Compare passwords
                     if(await bcrypt.compare(req.body.password, userData.password)){
-                        //Generate JWT Token, (Setup a expiry time)
-                        const accessToken = jwt.sign({id: userData.id, user_name: userData.user_name}, JWT_SECRET);
+                        //Generate JWT Token,Expires in 24 hours
+                        const accessToken = jwt.sign({id: userData.id, user_name: userData.user_name}, JWT_SECRET, {expiresIn: '24h'});
 
                         res.json({message: "Login Succesful", data: {token: accessToken}});
                         return ;

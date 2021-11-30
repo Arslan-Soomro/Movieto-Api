@@ -54,6 +54,20 @@ const formatDate = (dateStr) => {
     return oldDate.getFullYear() + monthSeperator + (oldDate.getMonth()+1) + dateSeperator + oldDate.getDate();
 }
 
+const formatMD = (data) => {
+    data.forEach((item, ind) => {
+        item.name = item.title;
+        delete item.title;
+        item.url = item.link;
+        delete item.link;
+        item.img_url = item.imgSrc;
+        delete item.imgSrc;
+        item.launch_date = formatDate(item.date);//Convert into valid date format
+        delete item.date;
+    })
+};
+
 exports.validateUserData = validateUserData;
 exports.hashEncrypt = hashEncrypt;
 exports.formatDate = formatDate;
+exports.formatMD = formatMD;

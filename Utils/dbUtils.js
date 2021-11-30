@@ -4,6 +4,9 @@ const User = require('../Models/user.model');
 const Movie = require('../Models/movie.model');
 const WatchList = require('../Models/watchlist.model');
 
+const MovieData = require('./MovieData.json');
+const { formatMD } = require('./utils');
+
 //Creates Tables and Their Associations
 const initTables = () => {
     try{
@@ -27,7 +30,15 @@ const resetUsersTable = async () => {
     await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
 }
 
-initTables();
+const seedMoviesDB = () => {
+    try{
+        formatMD(MovieData); // Give fields suitable names to suit the database design
+        Movie.bulkCreate(MovieData); // Insert All Of The Data into DB
+    }catch(err){
+        console.log("Error@SeedMovies: " + err.message);
+    }
+};
+
 
 exports.initTables = initTables;
 exports.resetUsersTable = resetUsersTable;
