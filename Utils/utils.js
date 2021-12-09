@@ -4,21 +4,22 @@ const { JWT_SECRET } = require('../config');
 
 const validateEmail = (email) => {
     const emailRegex =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return emailRegex.test(email);
+    return emailRegex.test(email) ? true : false;
 }
 
-const validateName = (name) => (name.length > 1);
+const validateName = (name) => {
+    return true;
+};//(name.length > 1) ? true : false;
 
-const validatePassword = (pass) => pass.length >= 8;
+const validatePass = (pass) => pass.length >= 8 ? true : false;
 
 const validateUserData = (uData) => {
     if(uData){
         if(uData.full_name && uData.user_name && uData.password && uData.email){
-            if(uData.full_name.length > 1){
-                const emailRegex =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                if(emailRegex.test(uData.email)){
-                    if(uData.password.length >= 8){
-                        if(uData.user_name.length > 1){
+            if(validateName(uData.full_name)){
+                if(validateEmail(uData.email)){
+                    if(validatePassword(uData.password)){
+                        if(validateName(uData.user_name)){
                             return ({message: 'All Entries are filled properly', isValid: true})
                         }else{
                             return ({message: 'User name must contain more than 8 characters', isValid: false })
@@ -30,7 +31,7 @@ const validateUserData = (uData) => {
                     return ({message: "Invalid Email Address", isValid: false});
                 }
             }else{
-                return ({message: 'Full name must contain more than 1', isValid: false});
+                return ({message: 'Full name must contain more than 1 characters', isValid: false});
             }
         }else{
             return ({message: 'One of the entries is missing.', isValid: false})
@@ -81,7 +82,6 @@ const formatMD = (data) => {
 const verifyToken = (token) => {
     try{
         const data = jwt.verify(token, JWT_SECRET);
-        console.log(data);
         return data;
     }catch(err){
         console.log("Error@TokenAuthentication: " + err.message);  
@@ -94,3 +94,6 @@ exports.hashEncrypt = hashEncrypt;
 exports.formatDate = formatDate;
 exports.formatMD = formatMD;
 exports.verifyToken = verifyToken;
+exports.validateName = validateName;
+exports.validateEmail = validateEmail;
+exports.validatePassword = validatePass;

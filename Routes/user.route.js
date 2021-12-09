@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { validateUserData, hashEncrypt } = require('../Utils/utils');
+const { validateUserData, validateEmail, validatePass, validateName, hashEncrypt, verifyToken } = require('../Utils/utils');
 
 const userModel = require('../Models/user.model');
 
@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET } = require('../config');
 const { USER_ATTRS } = require('../global');
+const { Model } = require('sequelize/dist');
 
 //TODO Users should be able to update their data
 
@@ -30,6 +31,7 @@ router.post('/signup', async (req, res) => {
     let userData = req.body;
 
     try{
+        //TODO trim strings so there are no trailing spaces
         //Performs Basic Validation on User Data
         const  validationResult = validateUserData(userData);
 
@@ -104,40 +106,102 @@ router.post('/login', async (req, res) => {
     }
 });
 
+
 router.post('/update', async (req, res) => {
-    //Update a user's details
-    //Verify the token
-    //Validate the received data
-    //Pick out attributes that are sent for updation
-    //Update that user in database
+    //TODO test this route to make sure it works with all attributes
+
     if(req.body){
         try{
             let userData = {};
+
             if(req.body.token){
+
+                let tokenData = verifyToken(req.body.token);
+
+                //Verify Token
+                if(!tokenData){
+                    res.status(401).json({message: 'Invalid Token'});
+                    return ;
+                }
+
+                //Basic Data Validation
                 if('user_name' in req.body){
                     userData.user_name = req.body.user_name;
-                }
+                    if(validateName(userData.user_name)){
+                        if(await userModel.findOne({where: {user_name: userData.user_name}}) != null){
+                            res.status(400).json({message: 'Username Already exists'});
+                            return ;
+                        }
+                    }else{
+                        res.status(400).json({message: 'Invalid Username'});
+                        return ;
+                    }
+                }   
+
                 if('full_name' in req.body){
                     userData.full_name = req.body.full_name;
+                    if(!validateName(userData.full_name)){
+                        res.status(400).json({message: 'Invalid Name'});
+                        return ;
+                    }
                 }
+
                 if('email' in req.body){
                     userData.email = req.body.email;
+                    if(!validateEmail(userData.email)){
+                        res.status(400).json({message: 'Invalid Email'});
+                        return ;
+                    }
                 }
+
                 if('password' in req.body){
                     userData.password = req.body.password;
+                    if(validatePass(user_data.password)){
+                        //Encrypt password
+                        userData.password = hashEncrypt(userData.password);
+                    }else{
+                        res.status(400).json({message: 'Invalid Password'});
+                        return ;
+                    }
+                }
+                if(Object.keys(userData).length > 0){
+                    await userModel.update(userData, {where: { id : tokenData.id }})
+                    res.status(201).json({message: 'Update Succesful'});
+                }else{
+                    res.status(400).json({message: 'Request is Empty'});
                 }
             }
-            if(Object.keys(userData).length > 0){
-                res.status(200).json({message: 'Attributes Received'});
-            }else{
-                res.status(400).json({message: 'No Attributes Received'});
-            }
         }catch(err){
-
+            console.log('Error@Update@User: ' + err.message);
         }
     }else{
 
     }
+})
+
+//TODO add a route for deleting a specific user
+router.post('/delete', async (req, res) => {
+    //Verify Token
+    if(req.body.token){
+        try{
+
+            const tokenData = verifyToken(req.body.token);
+            if(!tokenData){
+                res.status('401').json({message: 'Invalid Token'});
+                return ;
+            }
+
+            await userModel.destroy({where: {id: tokenData.id}});
+            res.status(201).json({message: 'User deleted Succesfully'});
+
+        }catch(err){
+            res.status(500).json({message: 'Unable to process the request'})
+        }
+    }else{
+        res.status(400).json({message:'Token is missing'});
+    }
+    //Get User Id
+    //Delete from database the user with given user id
 })
 
 
