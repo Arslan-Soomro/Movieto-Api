@@ -2,6 +2,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 
+const validateEmail = (email) => {
+    const emailRegex =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emailRegex.test(email);
+}
+
+const validateName = (name) => (name.length > 1);
+
+const validatePassword = (pass) => pass.length >= 8;
+
 const validateUserData = (uData) => {
     if(uData){
         if(uData.full_name && uData.user_name && uData.password && uData.email){

@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET } = require('../config');
+const { USER_ATTRS } = require('../global');
 
 //TODO Users should be able to update their data
 
@@ -19,13 +20,13 @@ router.get('/', (req, res) => {
 //Get All The Users
 router.get('/all', async(req, res) => {
     //Get All Data
-    const users = await userModel.findAll();
+    const users = await userModel.findAll({attributes: USER_ATTRS});
     //Send Back All Data
     res.status(200).json(users);
 })
 
 //Creates a new User
-router.post('/', async (req, res) => {
+router.post('/signup', async (req, res) => {
     let userData = req.body;
 
     try{
@@ -69,14 +70,12 @@ router.post('/login', async (req, res) => {
                 let tokenData = verifyToken(req.body.token);
 
                 if(!tokenData){
-                    res.status(400).json({message: "Invalid Token"});
+                    res.status(401).json({message: "Invalid Token"});
                     return ;
                 }
 
-                //TODO set proper attributes to send back to user (remove sensitive information)
-
                 //Return Back Data
-                userData = await userModel.findOne({where: { id: tokenData.id }});
+                userData = await userModel.findOne({ where: { id: tokenData.id }, attributes: USER_ATTRS});
                 res.status(200).json({message: "Token Autheticated, Access Granted", data: userData});
                 return ;
                 
@@ -103,8 +102,43 @@ router.post('/login', async (req, res) => {
             res.status(500).json({message: "Unable to process the request"})
         }
     }
-    //Generate A JWT token and send back
 });
+
+router.post('/update', async (req, res) => {
+    //Update a user's details
+    //Verify the token
+    //Validate the received data
+    //Pick out attributes that are sent for updation
+    //Update that user in database
+    if(req.body){
+        try{
+            let userData = {};
+            if(req.body.token){
+                if('user_name' in req.body){
+                    userData.user_name = req.body.user_name;
+                }
+                if('full_name' in req.body){
+                    userData.full_name = req.body.full_name;
+                }
+                if('email' in req.body){
+                    userData.email = req.body.email;
+                }
+                if('password' in req.body){
+                    userData.password = req.body.password;
+                }
+            }
+            if(Object.keys(userData).length > 0){
+                res.status(200).json({message: 'Attributes Received'});
+            }else{
+                res.status(400).json({message: 'No Attributes Received'});
+            }
+        }catch(err){
+
+        }
+    }else{
+
+    }
+})
 
 
 

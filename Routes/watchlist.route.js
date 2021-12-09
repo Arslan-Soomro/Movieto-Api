@@ -27,8 +27,6 @@ router.post('/add', async (req, res) => {
 
 });
 
-//TODO add a route so user can delete an item from watchlist
-
 router.post('/remove', async (req, res) => {
     if(req.body.token && req.body.movie_id){
         let tokenData = verifyToken(req.body.token);
