@@ -1,6 +1,12 @@
 const express = require('express');
+
+//For Scraping Data
 const got = require("got");
 const cheerio = require("cheerio");
+
+//For Accessing Database
+const db = require('../Utils/database');
+const movieModel = require('../Models/movie.model');
 
 const router = express.Router();
 
@@ -38,6 +44,25 @@ router.get('/', async (req, res) => {
     }else{
         res.status(404).json({msg : 'Invalid Link'});
     }
-})
+});
+
+
+router.get('/all', async (req, res) => {
+    try{
+
+        let pageNo = 0;
+
+        if(!req.query.page && !(req.query.page < 0)){
+            pageNo = req.query.page;
+        }
+
+        res.status(200).json(await movieModel.findAll({offset : pageNo, limit: 10 * (pageNo || 1)}));
+    
+    }catch(err){
+        console.log("Error@getAll@tmdb : " + err.message);
+        res.status(500).json({ message: "Unable to process the request"});
+    }
+});
+
 
 module.exports = router;

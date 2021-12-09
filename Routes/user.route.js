@@ -3,13 +3,14 @@ const router = express.Router();
 const { validateUserData, hashEncrypt } = require('../Utils/utils');
 
 const userModel = require('../Models/user.model');
+
 const db = require('../Utils/database');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//Move onto movies now maybe.
+const { JWT_SECRET } = require('../config');
 
-const JWT_SECRET = "blahblahblah";
+//TODO Users should be able to update their data
 
 router.get('/', (req, res) => {
     res.send("Welcome To Users Route");
@@ -64,16 +65,15 @@ router.post('/login', async (req, res) => {
             let userData;
 
             if(req.body.token){
-                let tokenData
                 
-                //Verify Token
-                try{
-                    tokenData = jwt.verify(req.body.token, JWT_SECRET);
-                }catch(err){
-                    console.log("Error@UserAuthentication: " + err.message);
-                    res.status(200).json({message: "Invalid Token"});
+                let tokenData = verifyToken(req.body.token);
+
+                if(!tokenData){
+                    res.status(400).json({message: "Invalid Token"});
                     return ;
                 }
+
+                //TODO set proper attributes to send back to user (remove sensitive information)
 
                 //Return Back Data
                 userData = await userModel.findOne({where: { id: tokenData.id }});
@@ -105,6 +105,8 @@ router.post('/login', async (req, res) => {
     }
     //Generate A JWT token and send back
 });
+
+
 
 router.get('/destroy', async (req, res) => {
     /*

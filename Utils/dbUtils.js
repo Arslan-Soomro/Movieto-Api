@@ -30,15 +30,18 @@ const resetUsersTable = async () => {
     await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
 }
 
-const seedMoviesDB = () => {
+//Fill Movies Table With Real Movie Data (Scraped Data)
+const seedMoviesDB = async (doFormat) => {
     try{
-        formatMD(MovieData); // Give fields suitable names to suit the database design
-        Movie.bulkCreate(MovieData); // Insert All Of The Data into DB
+        doFormat ? formatMD(MovieData) : null; // Give fields suitable names to suit the database design
+        await Movie.bulkCreate(MovieData); // Insert All Of The Data into DB
     }catch(err){
         console.log("Error@SeedMovies: " + err.message);
     }
 };
 
+//initTables();
+seedMoviesDB(true);
 
 exports.initTables = initTables;
 exports.resetUsersTable = resetUsersTable;

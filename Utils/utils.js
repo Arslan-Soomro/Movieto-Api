@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config');
 
 const validateUserData = (uData) => {
     if(uData){
@@ -67,7 +69,19 @@ const formatMD = (data) => {
     })
 };
 
+const verifyToken = (token) => {
+    try{
+        const data = jwt.verify(token, JWT_SECRET);
+        console.log(data);
+        return data;
+    }catch(err){
+        console.log("Error@TokenAuthentication: " + err.message);  
+    }
+    return null;
+}
+
 exports.validateUserData = validateUserData;
 exports.hashEncrypt = hashEncrypt;
 exports.formatDate = formatDate;
 exports.formatMD = formatMD;
+exports.verifyToken = verifyToken;

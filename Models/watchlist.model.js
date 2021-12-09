@@ -1,8 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../Utils/database');
 
-//This is a join table, that connects users with movies
-
 const WatchList = db.define("watchlist", {
     id: {
         type: Sequelize.INTEGER,
@@ -10,6 +8,14 @@ const WatchList = db.define("watchlist", {
         allowNull: false,
         primaryKey: true,
         unique: true,
+    },
+    user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    movie_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
     }
 });
 
