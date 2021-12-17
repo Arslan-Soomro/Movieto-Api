@@ -7,13 +7,33 @@ const cheerio = require("cheerio");
 //For Accessing Database
 const db = require('../Utils/database');
 const movieModel = require('../Models/movie.model');
+const Sequelize = require('sequelize');
 
 const router = express.Router();
 
+const PAGE_LIMIT = 20;
+
+//Get a Random Movie
 router.get('/', async (req, res) => {
+    try{
+        const randomMovie = await movieModel.findOne({ order: [Sequelize.fn('RAND')]});
+        res.status(200).json(randomMovie);
+    }catch(err){
+        console.log("Error@Random@Movies: " + err.message);
+        res.status(500).json({message: 'Unable to process the request'});
+    }
+});
+
+
+//Scraps a movie from tmdb, provided its tmdb link
+router.get('/tmdb', async (req, res) => {
+
+    //TODO when link is undefined as host/?link=   then a error is produced, fix it
+
     const link = req.query.link;
     console.log('Link Hit : ', link);
     console.log(link ? 'Yes' : 'No');
+
     if(link){
         try{
             const page = await got(link);
@@ -28,9 +48,9 @@ router.get('/', async (req, res) => {
             const rating = $('.user_score_chart').first().data('percent');//Get rating of a movie
 
             const data = {
-                imgsrc : imgSrc,
+                img_url : imgSrc,
                 genre : genres,
-                title : title.text(),
+                name : title.text(),
                 disc : disc.text(),
                 tagline : tagline.text(),
                 rating : rating,
@@ -46,23 +66,35 @@ router.get('/', async (req, res) => {
     }
 });
 
-
 router.get('/all', async (req, res) => {
     try{
 
-        let pageNo = 0;
+        let pageNo = 1;
 
-        if(!req.query.page && !(req.query.page < 0)){
+        if(req.query.page > 1){
             pageNo = req.query.page;
         }
 
-        res.status(200).json(await movieModel.findAll({offset : pageNo, limit: 10 * (pageNo || 1)}));
+        //if pageNo = 0, then offset is 0 hence returning from start and when pageNo = 1 then 1*PAGE_LIMIT = 20, so records after 20 are required
+        res.status(200).json(await movieModel.findAll({offset : (pageNo-1) * PAGE_LIMIT, limit: PAGE_LIMIT}));
     
     }catch(err){
         console.log("Error@getAll@tmdb : " + err.message);
         res.status(500).json({ message: "Unable to process the request"});
     }
 });
+
+router.get('/count', async (req, res) => {
+    try{
+        const movieCount = await movieModel.count();
+        //totalPages = movieCount / Limit
+        res.status(200).json({data: {count: movieCount, totalPages: movieCount/PAGE_LIMIT}});
+
+    }catch(err){
+        console.log('Error@Count@Movies: ', err.message);
+        res.status(500).json({message: 'Unable to process the request'});
+    }
+})
 
 
 module.exports = router;

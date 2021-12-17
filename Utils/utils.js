@@ -1,15 +1,16 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../config');
+require('dotenv').config();
+const { JWT_SECRET } = process.env;
 
 const validateEmail = (email) => {
     const emailRegex =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return emailRegex.test(email) ? true : false;
 }
 
-const validateName = (name) => {
-    return true;
-};//(name.length > 1) ? true : false;
+//TODO check if validation methods work properly
+
+const validateName = (name) => ((name.trim()).length > 1) ? true : false;
 
 const validatePass = (pass) => pass.length >= 8 ? true : false;
 
@@ -18,7 +19,7 @@ const validateUserData = (uData) => {
         if(uData.full_name && uData.user_name && uData.password && uData.email){
             if(validateName(uData.full_name)){
                 if(validateEmail(uData.email)){
-                    if(validatePassword(uData.password)){
+                    if(validatePass(uData.password)){
                         if(validateName(uData.user_name)){
                             return ({message: 'All Entries are filled properly', isValid: true})
                         }else{
@@ -81,6 +82,7 @@ const formatMD = (data) => {
 
 const verifyToken = (token) => {
     try{
+        //console.log("@token: " + token);
         const data = jwt.verify(token, JWT_SECRET);
         return data;
     }catch(err){
