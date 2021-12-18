@@ -10,7 +10,13 @@
     "routes" : [
         {
             "src" : "/(.*)",
-            "dest" : "/"
+            "dest" : "/",
+            "headers": 
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+            
         }
     ]
 }

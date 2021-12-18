@@ -159,6 +159,7 @@ router.post('/update', async (req, res) => {
                     return ;
                 }
             }
+
             /* Should not update here becuase of security reasons
             if(req.body.password){
                 userData.password = req.body.password;
@@ -174,6 +175,7 @@ router.post('/update', async (req, res) => {
                 }
             }
             */
+           
             if(Object.keys(userData).length > 0){
                 await userModel.update(userData, {where: { id : tokenData.id }})
                 res.status(201).json({message: 'Update Succesful'});
