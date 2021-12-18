@@ -11,12 +11,13 @@
         {
             "src" : "/(.*)",
             "dest" : "/",
-            "headers": 
-                {
-                  "key": "access-control-allow-origin",
-                  "value": "*"
-                }
-            
+            "methods": ["GET", "POST", "OPTIONS"],
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+                "Access-Control-Allow-Credentials": "true"
+            },
+            "continue": true
         }
     ]
 }
