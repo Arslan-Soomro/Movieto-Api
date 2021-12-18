@@ -31,8 +31,8 @@ router.get('/tmdb', async (req, res) => {
     //TODO when link is undefined as host/?link=   then a error is produced, fix it
 
     const link = req.query.link;
-    console.log('Link Hit : ', link);
-    console.log(link ? 'Yes' : 'No');
+    //console.log('Link Hit : ', link);
+    //console.log(link ? 'Yes' : 'No');
 
     if(link){
         try{

@@ -1,3 +1,4 @@
+require('dotenv').config({path: '../.env'});
 const express = require('express');
 const router = express.Router();
 const { validateUserData, validateEmail, validatePass, validateName, hashEncrypt, verifyToken } = require('../Utils/utils');
@@ -6,7 +7,7 @@ const userModel = require('../Models/user.model');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+
 
 const { JWT_SECRET } = process.env;
 const { USER_ATTRS } = require('../global');
@@ -15,14 +16,14 @@ router.get('/', (req, res) => {
     res.send("Welcome To Users Route");
 });
 
-//TODO remove this route for safety purposes
 //Get All The Users
+/*
 router.get('/all', async(req, res) => {
     //Get All Data
     const users = await userModel.findAll({attributes: USER_ATTRS});
     //Send Back All Data
     res.status(200).json(users);
-})
+})*/
 
 //Creates a new User
 router.post('/signup', async (req, res) => {
@@ -106,9 +107,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-//TODO test this route
 router.post('/update', async (req, res) => {
-    //TODO test this route to make sure it works with all attributes
 
     if(req.body && req.body.token){
         try{

@@ -30,6 +30,14 @@ const resetUsersTable = async () => {
     await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
 }
 
+const resetMoviesTable = async () => {
+    //Delete All Users
+    await Movie.destroy({ truncate: { cascade: true, restartIdentity: true }}); 
+    //Set Promary Key to 0
+    await db.query("ALTER TABLE users AUTO_INCREMENT = 0");
+}
+
+
 //Fill Movies Table With Real Movie Data (Scraped Data)
 const seedMoviesDB = async (doFormat) => {
     try{
@@ -41,7 +49,7 @@ const seedMoviesDB = async (doFormat) => {
 };
 
 //initTables();
-seedMoviesDB(true);
+//seedMoviesDB(true);
 
 exports.initTables = initTables;
 exports.resetUsersTable = resetUsersTable;
