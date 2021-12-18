@@ -11,7 +11,7 @@ const watchlistRouter = require('./Routes/watchlist.route');
 
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({ origin: false }));
 app.use(express.json());
 
 //Handle Routes
