@@ -9,7 +9,7 @@ const db = require('../Utils/database');
 const movieModel = require('../Models/movie.model');
 const Sequelize = require('sequelize');
 
-const router = express.Router();
+const router = express  .Router();
 
 const PAGE_LIMIT = 20;
 
