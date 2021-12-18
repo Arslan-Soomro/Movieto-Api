@@ -7,7 +7,7 @@ let sequelize;
 
 try {
 
-    sequelize = new Sequelize(process.env.DB_URI, { dialect: 'mysql' });
+    sequelize = new Sequelize(process.env.DB_URI, { dialect: 'mysql', dialectModule: require('mysql2') });
     sequelize.authenticate().then(() => console.log('Connection has been established successfully.'));
 
 } catch (error) {
