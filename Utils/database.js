@@ -1,6 +1,8 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
 
+//TODO install mysql2
+
 let sequelize;
 
 try {
