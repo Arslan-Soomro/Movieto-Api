@@ -28,11 +28,9 @@ router.get('/', async (req, res) => {
 //Scraps a movie from tmdb, provided its tmdb link
 router.get('/tmdb', async (req, res) => {
 
-    //TODO when link is undefined as host/?link=   then a error is produced, fix it
+    //FIXME this route scraps data perfectly when run locally but when uploaded on a server it doesn't work
 
     const link = req.query.link;
-    //console.log('Link Hit : ', link);
-    //console.log(link ? 'Yes' : 'No');
 
     if(link){
         try{
