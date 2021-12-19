@@ -39,6 +39,8 @@ router.get('/tmdb', async (req, res) => {
             const page = await got(link);
             const $ = cheerio.load(page.body);
 
+            console.log("Link: " + link);
+
             const src = $('#original_header > div.poster_wrapper.false > div > div.image_content.backdrop > img').attr('src');
             const imgSrc = 'https://themoviedb.org' + (src ? src.replace('_filter(blur)', '') : '');
             const title = $('#original_header > div.header_poster_wrapper.false > section > div.title.ott_false > h2 > a');
@@ -47,11 +49,7 @@ router.get('/tmdb', async (req, res) => {
             const genres = $('#original_header > div.header_poster_wrapper.false > section > div.title.ott_false > div > span.genres').text().trim();
             const rating = $('.user_score_chart').first().data('percent');//Get rating of a movie
 
-            console.log("Movie Details");
-            console.log(src);
-            console.log(title);
-            console.log(tagline);
-            console.log(disc);
+            console.log("src: " + src);
 
             const data = {
                 img_url : imgSrc,
