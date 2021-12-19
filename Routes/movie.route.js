@@ -34,6 +34,7 @@ router.get('/tmdb', async (req, res) => {
 
     if(link){
         try{
+            /* Fix the above issue till then this is in maintanance mode
             const page = await got(link);
             const $ = cheerio.load(page.body);
 
@@ -52,6 +53,16 @@ router.get('/tmdb', async (req, res) => {
                 disc : disc.text(),
                 tagline : tagline.text(),
                 rating : rating,
+            }*/
+
+            //Dummy data for now
+            const data = {
+                img_url : 'NA',
+                genre : 'NA',
+                name : 'NA',
+                disc : 'NA',
+                tagline : 'NA',
+                rating : 'NA',
             }
 
             res.status(200).json(data);

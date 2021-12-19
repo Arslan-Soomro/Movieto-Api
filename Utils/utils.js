@@ -12,7 +12,7 @@ const validateEmail = (email) => {
 
 const validateName = (name) => ((name.trim()).length > 1) ? true : false;
 
-const validatePass = (pass) => pass.length >= 8 ? true : false;
+const validatePass = (pass) => pass.trim().length >= 8 ? true : false;
 
 const validateUserData = (uData) => {
     if(uData){
