@@ -40,7 +40,7 @@ router.get('/tmdb', async (req, res) => {
             const $ = cheerio.load(page.body);
 
             const src = $('#original_header > div.poster_wrapper.false > div > div.image_content.backdrop > img').attr('src');
-            const imgSrc = 'https://themoviedb.org' + (src.replace('_filter(blur)', ''));
+            const imgSrc = 'https://themoviedb.org' + (src ? src.replace('_filter(blur)', '') : '');
             const title = $('#original_header > div.header_poster_wrapper.false > section > div.title.ott_false > h2 > a');
             const tagline = $('#original_header > div.header_poster_wrapper.false > section > div.header_info > h3.tagline');
             const disc = $('#original_header > div.header_poster_wrapper.false > section > div.header_info > div > p');
