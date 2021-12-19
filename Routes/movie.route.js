@@ -47,6 +47,12 @@ router.get('/tmdb', async (req, res) => {
             const genres = $('#original_header > div.header_poster_wrapper.false > section > div.title.ott_false > div > span.genres').text().trim();
             const rating = $('.user_score_chart').first().data('percent');//Get rating of a movie
 
+            console.log("Movie Details");
+            console.log(src);
+            console.log(title);
+            console.log(tagline);
+            console.log(disc);
+
             const data = {
                 img_url : imgSrc,
                 genre : genres,
